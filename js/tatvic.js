@@ -32,8 +32,8 @@
 
 	Tatvic.hideLoaderAndShowData = function () {
 		Tatvic.updateData();
-		window.document.getElementById("loader").style.visibility = "hidden";
-		window.document.getElementById("tatvic-data").style.visibility = "visible";
+		window.document.getElementById("loader").style.display = "none";
+		window.document.getElementById("tatvic-data").style.display = "block";
 		Tatvic.rescheduleInterval();
 	}
 

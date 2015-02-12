@@ -5,7 +5,8 @@
 }
 
 #tatvic-data {
-	visibility: hidden;
+	margin-top: 20px;
+	display: none;
 }
 
 #tatvic-data > div {
