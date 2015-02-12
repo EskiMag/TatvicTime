@@ -77,8 +77,8 @@
 	}
 
 	Tatvic.updatePositionWithPosition = function (position) {
-		window.document.getElementById('latitude').innerText = position.coords.latitude;
-		window.document.getElementById('longitude').innerText = position.coords.longitude;
+		window.document.getElementById('latitude').innerText = String(position.coords.latitude).slice(0,11);
+		window.document.getElementById('longitude').innerText = String(position.coords.longitude).slice(0,11);
 	}
 
 	Tatvic.updateStartTimeWithStartTime = function (startTime) {
