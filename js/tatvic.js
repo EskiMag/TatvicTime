@@ -99,6 +99,10 @@
 
 	Tatvic.sunriseForDateAndPosition = function (date, position) {
 		var times = SunCalc.getTimes(date, position.coords.latitude, position.coords.longitude);
+		if (times.sunrise > (new Date())) {
+			var yesterday = date - (1000 * 60 * 60 * 24);
+			times = SunCalc.getTimes(yesterday, position.coords.latitude, position.coords.longitude);			
+		}
 
 		return times.sunrise;
 	}
