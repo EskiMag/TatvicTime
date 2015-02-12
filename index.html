@@ -1,146 +1,35 @@
 <!DOCTYPE html>
 <html>
-<body onLoad="getLocation()">
-<dt>Actual Tatva</dt>
-<dd id="actual-tatva"></dd>
-<dt>Until Next Tatva</dt>
-<dd id="until-next-tatva"></dd>
-<dt>Today Sunrise Time</dt>
-<dd id="sunrise-time"></dd>
-<dt>Latitude</dt>
-<dd id="latitude"></dd>
-<dt>Longitude</dt>
-<dd id="longitude"></dd>
-<script src="suncalc.js"></script>
-<script>
-var cachedPosition = null;
-var updatingInterval = null;
-
-var msInS = 1000;
-var msInM = msInS * 60;
-var msInH = msInM * 60;
-var backgroundColors = ["black", "blue", "red", "white", "yellow"];
-var textColors = ["white", "white", "black", "black", "black"];
-var tatvaNames = ["ÁKAŠA", "VAYU", "TEJAS", "PRITHIVI", "APAS"];
-var tatvasCount = tatvaNames.length;
-var tatvaLengthInM = 24;
-var tatvaLengthInS = tatvaLengthInM * 60;
-var tatvaLengthInMs = tatvaLengthInS * 1000;
-
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(handlePosition, handleError);
-        console.log('getting location');
-    } else { 
-        document.body.innerText = "Geolocation is not supported by this browser.";
-    }
-}
-
-function handleError(error){
-	document.body.innerText = "ERROR: " + JSON.stringify(error);
-}
-
-function rescheduleInterval(){
-	clearInterval(updatingInterval);
-    updatingInterval = setInterval(updateData, 1000);
-}
-
-function handlePosition(position){
-	cachedPosition = position;
-	rescheduleInterval();
-}
-
-function updateData(){
-	var nowDate = new Date();
-	var sunrise = sunriseForDateAndPosition(nowDate, cachedPosition);
-	var tatvaIndex = tatvaIndexForDateAndPosition(nowDate, cachedPosition);
-	var tatvaName = tatvaNames[tatvaIndex];
-	var msLeft = msUntilEndOfActualTatvaForPosition(cachedPosition);
-
-	updateColorsWithTatvaIndex(tatvaIndex);
-
-	updateTimeLeftWithMs(msLeft);
-	updateTatvaNameWithTatvaName(tatvaName);
-	updateSunriseWithSunrise(sunrise);
-	updatePositionWithPosition(cachedPosition);
-}
-
-function updateTimeLeftWithMs(msLeft){
-	document.getElementById('until-next-tatva').innerText = msToTime(msLeft);
-}
-
-function updateColorsWithTatvaIndex(tatvaIndex){
-	document.body.style.backgroundColor = backgroundColors[tatvaIndex];
-	document.body.style.color = textColors[tatvaIndex];	
-}
-
-function updateSunriseWithSunrise(sunrise){
-	document.getElementById('sunrise-time').innerText = timeFromDate(sunrise);	
-}
-
-function updateTatvaNameWithTatvaName(tatvaName){
-	document.getElementById('actual-tatva').innerText = tatvaName;
-}
-
-function updatePositionWithPosition(position){
-	document.getElementById('latitude').innerText = position.coords.latitude;
-	document.getElementById('longitude').innerText = position.coords.longitude;
-}
-
-function sunriseForDateAndPosition(date, position){
-	var times = SunCalc.getTimes(date, position.coords.latitude, position.coords.longitude);
-	return times.sunrise;
-}
-
-function msSinceSunriseForDateAndPosition(date, position){
-	var sunriseForDate = sunriseForDateAndPosition(date, position);	
-	var msFromSunrise = new Date() - sunriseForDate;
-
-	return msFromSunrise;
-}
-
-function msUntilEndOfActualTatvaForPosition(position){
-	var msFromSunrise = msSinceSunriseForDateAndPosition(new Date(), position);
-	var msAlreadyPassedFromActualTatva = msFromSunrise % tatvaLengthInMs;
-	var msLeftForActualTatva = tatvaLengthInMs - msAlreadyPassedFromActualTatva;
-
-	return msLeftForActualTatva;
-}
-
-function tatvaIndexForDateAndPosition(date, position){
-	var msFromSunrise = msSinceSunriseForDateAndPosition(date, position);
-	var actualTatvaIndex = msFromSunrise / tatvaLengthInMs;
-	var tatvaOfTheDayIndex = Math.floor(actualTatvaIndex);
-	console.log("msFromSunrise: " + msFromSunrise + ", tatvaOfTheDayIndex: " + tatvaOfTheDayIndex);
-	var actualTatvaIndex = tatvaOfTheDayIndex % tatvasCount;
-
-	return actualTatvaIndex;
-}
-
-function timeFromDate(date) {
-	var h = date.getHours();
-	var m = date.getMinutes();
-	var s = date.getSeconds();
-
-    return zeroPad(h) +  ":" + zeroPad(m) + ":" + zeroPad(s);
-}
-
-function msToTime(ms){
-	var time = "";
-	
-	var h = Math.floor(ms / msInH);
-	ms -= h * msInH;
-	var m = Math.floor(ms / msInM);
-	ms -= m * msInM;
-	var s = Math.floor(ms / msInS);
-	ms -= s * msInS;
-
-	return zeroPad(h) + ":" + zeroPad(m) + ":" + zeroPad(s);
-}
-
-function zeroPad(number){
-	return ("00" + number).slice(-2);
-}
-</script>
-</body>
-</html>
+	<head>
+		<title>TatvicTime</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/tatvic.css" />
+		<script src="js/suncalc.js"></script>
+		<script src="js/tatvic.js"></script>
+	</head>
+	<body>
+		<div id="loader">Loading...</div>
+		<div id="tatvic-data">
+			<dt>Actual Tatva</dt>
+			<dd id="actual-tatva"></dd>
+			<dt>Until Next Tatva</dt>
+			<dd id="until-next-tatva"></dd>
+			<dt>Today Sunrise Time</dt>
+			<dd id="sunrise-time"></dd>
+			<dt>Latitude</dt>
+			<dd id="latitude"></dd>
+			<dt>Longitude</dt>
+			<dd id="longitude"></dd>
+		</div>
+		<script>
+		(function () {
+		    if (navigator.geolocation) {
+		        navigator.geolocation.getCurrentPosition(Tatvic.handlePosition, Tatvic.handleError);
+		    } else { 
+		        document.body.innerText = "Geolocation is not supported by this browser.";
+		    }
+		})();
+		</script>
+	</body>
+	</html>
