@@ -43,13 +43,21 @@
 		var tatvaIndex = Tatvic.tatvaIndexForDateAndPosition(nowDate, Tatvic.cachedPosition);
 		var tatvaName = tatvaNames[tatvaIndex];
 		var msLeft = Tatvic.msUntilEndOfActualTatvaForPosition(Tatvic.cachedPosition);
+		var tatvaStartTime = Tatvic.startTimeOfActualTatvaForPosition(Tatvic.cachedPosition);
+		var nextTatvaName = Tatvic.nextTatvaNameForPosition(Tatvic.cachedPosition);
 
 		Tatvic.updateColorsWithTatvaIndex(tatvaIndex);
 
 		Tatvic.updateTimeLeftWithMs(msLeft);
+		Tatvic.updateNextTatvaNameWithName(nextTatvaName);
 		Tatvic.updateTatvaNameWithTatvaName(tatvaName);
+		Tatvic.updateStartTimeWithStartTime(tatvaStartTime);
 		Tatvic.updateSunriseWithSunrise(sunrise);
 		Tatvic.updatePositionWithPosition(Tatvic.cachedPosition);
+	}
+
+	Tatvic.updateNextTatvaNameWithName = function (name) {
+		window.document.getElementById('next-tatva-name').innerText = name;
 	}
 
 	Tatvic.updateTimeLeftWithMs = function (msLeft) {
@@ -57,8 +65,7 @@
 	}
 
 	Tatvic.updateColorsWithTatvaIndex = function (tatvaIndex) {
-		window.document.body.style.backgroundColor = backgroundColors[tatvaIndex];
-		window.document.body.style.color = textColors[tatvaIndex];	
+		window.document.body.className = "tatva" + (tatvaIndex + 1);
 	}
 
 	Tatvic.updateSunriseWithSunrise = function (sunrise) {
@@ -74,8 +81,25 @@
 		window.document.getElementById('longitude').innerText = position.coords.longitude;
 	}
 
+	Tatvic.updateStartTimeWithStartTime = function (startTime) {
+		window.document.getElementById('tatva-start-time').innerText = Tatvic.timeFromDate(startTime);
+	}
+
+	Tatvic.nextTatvaNameForPosition = function (position) {
+		var actualTatvaIndex = Tatvic.tatvaIndexForDateAndPosition(new Date(), position);
+		var nextTatvaIndex;
+		if ((actualTatvaIndex + 1) < tatvasCount) {
+			nextTatvaIndex = actualTatvaIndex + 1;
+		} else {
+			nextTatvaIndex = 0;
+		}
+
+		return tatvaNames[nextTatvaIndex];
+	}
+
 	Tatvic.sunriseForDateAndPosition = function (date, position) {
 		var times = SunCalc.getTimes(date, position.coords.latitude, position.coords.longitude);
+
 		return times.sunrise;
 	}
 
@@ -86,9 +110,22 @@
 		return msFromSunrise;
 	}
 
-	Tatvic.msUntilEndOfActualTatvaForPosition = function (position) {
+	Tatvic.msAlreadyPassedFromActualTatvaForPosition = function (position) {
 		var msFromSunrise = Tatvic.msSinceSunriseForDateAndPosition(new Date(), position);
-		var msAlreadyPassedFromActualTatva = msFromSunrise % tatvaLengthInMs;
+		var msAlreadyPassed = msFromSunrise % tatvaLengthInMs;
+
+		return msAlreadyPassed;
+	}
+
+	Tatvic.startTimeOfActualTatvaForPosition = function (position) {
+		var startTimeInMs = (new Date()) - Tatvic.msAlreadyPassedFromActualTatvaForPosition(position);
+		var startDate = new Date(startTimeInMs);
+
+		return startDate;
+	}
+
+	Tatvic.msUntilEndOfActualTatvaForPosition = function (position) {
+		var msAlreadyPassedFromActualTatva = Tatvic.msAlreadyPassedFromActualTatvaForPosition(position);
 		var msLeftForActualTatva = tatvaLengthInMs - msAlreadyPassedFromActualTatva;
 
 		return msLeftForActualTatva;

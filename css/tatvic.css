@@ -2,6 +2,51 @@
 	visibility: hidden;
 }
 
-dd {
-	text-align: right;
+#tatvic-data > div {
+	text-align: center;
+	margin-bottom: 15px;
+}
+
+#actual-tatva, #until-next-tatva {
+	font-size: 200%;
+	font-weight: bold;
+}
+
+#tatva-start-time {
+	font-size: 150%;
+	font-weight: bold;
+}
+
+#sunrise-time {
+	font-size: 120%;
+	font-weight: bold;
+}
+
+#latitude, #longitude {
+	font-weight: bold;
+}
+
+body.tatva1 {
+	background-color: #222;
+	color: #ddd;
+}
+
+body.tatva2 {
+	background-color: #348;
+	color: #eee;
+}
+
+body.tatva3 {
+	background-color: #b33;
+	color: #133;
+}
+
+body.tatva4 {
+	background-color: #eee;
+	color: #444;
+}
+
+body.tatva5 {
+	background-color: #ffa;
+	color: #444;
 }

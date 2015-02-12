@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<title>TatvicTime</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="viewport" content="widivh=device-widivh, initial-scale=1.0">
 		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
 		<link rel="stylesheet" type="text/css" href="css/tatvic.css" />
 		<script src="js/suncalc.js"></script>
@@ -11,16 +11,30 @@
 	<body>
 		<div id="loader">Loading...</div>
 		<div id="tatvic-data">
-			<dt>Actual Tatva</dt>
-			<dd id="actual-tatva"></dd>
-			<dt>Until Next Tatva</dt>
-			<dd id="until-next-tatva"></dd>
-			<dt>Today Sunrise Time</dt>
-			<dd id="sunrise-time"></dd>
-			<dt>Latitude</dt>
-			<dd id="latitude"></dd>
-			<dt>Longitude</dt>
-			<dd id="longitude"></dd>
+			<div>
+				<div>Actual Tatva</div>
+				<div id="actual-tatva"></div>
+			</div>
+			<div>
+				<div>Until Next Tatva (<span id="next-tatva-name"></span>)</div>
+				<div id="until-next-tatva"></div>
+			</div>
+			<div>
+				<div>This Tatva Started At</div>
+				<div id="tatva-start-time"></div>
+			</div>
+			<div>
+				<div>Today Sunrise Time</div>
+				<div id="sunrise-time"></div>
+			</div>
+			<div>
+				<div>Latitude</div>
+				<div id="latitude"></div>
+			</div>
+			<div>
+				<div>Longitude</div>
+				<div id="longitude"></div>
+			</div>
 		</div>
 		<script>
 		(function () {
